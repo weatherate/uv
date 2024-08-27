@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uv
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uv
+  template:
+    metadata:
+      labels:
+        app: uv
+    spec:
+      imagePullSecrets:
+      - name: github-registry-secret
+      containers:
+      - name: uv
+        image: ghcr.io/weatherate/uv:latest
+        ports:
+        - containerPort: 5000
