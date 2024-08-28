@@ -78,8 +78,13 @@ def index(tv_station):
     if tv_station in TV_STATIONS:
         weather_data = get_weather_data(tv_station)
         if weather_data:
+            current_high = weather_data['maxTempF']
+            current_low = weather_data['minTempF']
+            current_precip_type = weather_data['precipType']
+            current_precip_percent = weather_data['precipChance']
+            current_phrase = weather_data['phrase']
             forecasts = weather_data['forecasts']['daily']
-            return render_template('index.html', forecasts=forecasts, tv_station=tv_station)
+            return render_template('index.html', forecasts=forecasts, tv_station=tv_station, high=current_high, low=current_low, precip_type=current_precip_type, precip_chance=current_precip_percent, phrase=current_phrase)
         else:
             return "Error retrieving weather data"
     else:

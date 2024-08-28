@@ -15,6 +15,14 @@
             <th>Precip Chance (%)</th>
             <th>Details</th> 
         </tr>
+        <tr>
+            <td>TODAY</td>
+            <td>{{ high }}</td>
+            <td>{{ low }}</td>
+            <td>{{ precipType }}</td>
+            <td>{{ precipChance }} %</td>
+            <td>{{ phrase }}</td>
+        </tr>
         {% for forecast in forecasts %}
         <tr>
             <td>{{ forecast["formattedDate"] }}</td>
