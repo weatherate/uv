@@ -19,3 +19,16 @@ spec:
         image: ghcr.io/weatherate/uv:latest
         ports:
         - containerPort: 5000
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - k3s-node1
+      tolerations:
+      - key: "registry"
+        operator: "Exists"
+        effect: "NoSchedule"
