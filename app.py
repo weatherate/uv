@@ -24,7 +24,8 @@ TV_STATIONS = {
     "KWEX": "0000014d-0b36-ddc6-a5dd-1bb62fa10000",
     "KAKW": "0000014d-0725-ddc6-a5dd-17b74f6b0000",
     "KFTV": "0000014d-0727-ddc6-a5dd-17b78b560000",
-    "WLII": "0000014d-0b3c-ddc6-a5dd-1bbe0db80000"
+    "WLII": "0000014d-0b3c-ddc6-a5dd-1bbe0db80000",
+    "KUTH": "00000171-32da-d154-ab7d-33fbed240021"
 }
 
 def get_weather_data(tv_station):
