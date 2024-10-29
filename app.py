@@ -25,7 +25,8 @@ TV_STATIONS = {
     "KAKW": "0000014d-0725-ddc6-a5dd-17b74f6b0000",
     "KFTV": "0000014d-0727-ddc6-a5dd-17b78b560000",
     "WLII": "0000014d-0b3c-ddc6-a5dd-1bbe0db80000",
-    "KUTH": "00000171-32da-d154-ab7d-33fbed240021"
+    "KUTH": "00000171-32da-d154-ab7d-33fbed240021",
+    "KHRR": "KHRR"  # Added KHRR
 }
 
 def get_weather_data(tv_station):
@@ -62,11 +63,8 @@ def get_weather_data(tv_station):
             "language": "ES"
         }
     }
-
     response = requests.post(url, headers=headers, data=json.dumps(query))
-
     if response.status_code == 200:
-        # Parse response and format dates
         weather_data = response.json()['data']['getWeatherForecastByTvStation']
         for forecast in weather_data['forecasts']['daily']:
             forecast['formattedDate'] = datetime.strptime(forecast['localeTime'], '%Y-%m-%dT%H:%M:%S').strftime('%m-%d-%Y')
@@ -74,9 +72,50 @@ def get_weather_data(tv_station):
     else:
         return None
 
+def get_telemundo_weather_data(zip_code):
+    url = f"https://www.telemundoarizona.com/el-tiempo/latest.json/?zipCode={zip_code}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return None
+
 @app.route('/<tv_station>')
 def index(tv_station):
-    if tv_station in TV_STATIONS:
+    if tv_station == 'KHRR':
+        weather_data = get_telemundo_weather_data('85720')  # Use the appropriate zip code for KHRR
+        if weather_data:
+            current = weather_data['current_observation']
+            current_high = current['hiTempF']
+            current_low = current['loTempF']
+            current_precip_type = current.get('precipType', 'N/A')
+            current_precip_percent = current['precip']
+            current_phrase = current['phraseDay']
+            
+            # Format forecasts for template
+            forecasts = []
+            for day in weather_data['daily_forecast']:
+                forecasts.append({
+                    'formattedDate': datetime.strptime(day['time']['local_date'], '%m/%d/%Y %I:%M:%S %p').strftime('%m-%d-%Y'),
+                    'icon': day['iconCode'],
+                    'precipChance': day['precip'],
+                    'precipType': day['daypart']['day'].get('precipType', 'N/A'),
+                    'phrase': day['daypart']['day']['wxPhraseLong'],
+                    'minTempF': day['loTempF'],
+                    'maxTempF': day['hiTempF']
+                })
+            
+            return render_template('index.html', 
+                                   forecasts=forecasts, 
+                                   tv_station=tv_station, 
+                                   high=current_high, 
+                                   low=current_low, 
+                                   precip_type=current_precip_type, 
+                                   precip_chance=current_precip_percent, 
+                                   phrase=current_phrase)
+        else:
+            return "Error retrieving weather data for KHRR"
+    elif tv_station in TV_STATIONS:
         weather_data = get_weather_data(tv_station)
         if weather_data:
             current_high = weather_data['maxTempF']
@@ -85,7 +124,14 @@ def index(tv_station):
             current_precip_percent = weather_data['precipChance']
             current_phrase = weather_data['phrase']
             forecasts = weather_data['forecasts']['daily']
-            return render_template('index.html', forecasts=forecasts, tv_station=tv_station, high=current_high, low=current_low, precip_type=current_precip_type, precip_chance=current_precip_percent, phrase=current_phrase)
+            return render_template('index.html', 
+                                   forecasts=forecasts, 
+                                   tv_station=tv_station, 
+                                   high=current_high, 
+                                   low=current_low, 
+                                   precip_type=current_precip_type, 
+                                   precip_chance=current_precip_percent, 
+                                   phrase=current_phrase)
         else:
             return "Error retrieving weather data"
     else:
