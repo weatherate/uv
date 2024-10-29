@@ -25,8 +25,12 @@ TV_STATIONS = {
     "KAKW": "0000014d-0725-ddc6-a5dd-17b74f6b0000",
     "KFTV": "0000014d-0727-ddc6-a5dd-17b78b560000",
     "WLII": "0000014d-0b3c-ddc6-a5dd-1bbe0db80000",
-    "KUTH": "00000171-32da-d154-ab7d-33fbed240021",
-    "KHRR": "KHRR"  # Added KHRR
+    "KUTH": "00000171-32da-d154-ab7d-33fbed240021"
+}
+
+TELEMUNDO_STATIONS = {
+    "KHRR": "85720",
+    "WRDM": "06180"
 }
 
 def get_weather_data(tv_station):
@@ -82,8 +86,8 @@ def get_telemundo_weather_data(zip_code):
 
 @app.route('/<tv_station>')
 def index(tv_station):
-    if tv_station == 'KHRR':
-        weather_data = get_telemundo_weather_data('85720')  # Use the appropriate zip code for KHRR
+    if tv_station in TELEMUNDO_STATIONS:
+        weather_data = get_telemundo_weather_data(TELEMUNDO_STATIONS[tv_station])
         if weather_data:
             current = weather_data['current_observation']
             current_high = current['hiTempF']
@@ -114,7 +118,7 @@ def index(tv_station):
                                    precip_chance=current_precip_percent, 
                                    phrase=current_phrase)
         else:
-            return "Error retrieving weather data for KHRR"
+            return f"Error retrieving weather data for {tv_station}"
     elif tv_station in TV_STATIONS:
         weather_data = get_weather_data(tv_station)
         if weather_data:
