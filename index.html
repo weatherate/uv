@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+</head>
+<body>
+    <h1>Weather Forecast</h1>
+
+    <div class="controls">
+        <label for="station-select">Select TV Station:</label>
+        <select id="station-select">
+            <option value="">-- Choose a station --</option>
+            <optgroup label="Univision" id="univision-group"></optgroup>
+            <optgroup label="Telemundo" id="telemundo-group"></optgroup>
+        </select>
+    </div>
+
+    <div id="loading" class="hidden">Loading weather data...</div>
+    <div id="error" class="hidden"></div>
+
+    <div id="weather-container" class="hidden">
+        <h2 id="station-name"></h2>
+        <table id="weather-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>High</th>
+                    <th>Low</th>
+                    <th>Precip Type</th>
+                    <th>Precip Chance (%)</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody id="weather-body"></tbody>
+        </table>
+    </div>
+
+    <script src="static/script.js"></script>
+</body>
+</html>
