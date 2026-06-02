@@ -100,7 +100,8 @@ function createRow(date, high, low, precipType, precipChance, phrase) {
 }
 
 async function fetchUnivision(stationCode) {
-    const url = 'https://graphql.univision.com/';
+    const targetUrl = 'https://graphql.univision.com/';
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
     const query = {
         query: `query getForecastByTVStation($language: WeatherForecastLanguage!, $tvStation: TvStation!) {
             getWeatherForecastByTvStation(language: $language, tvStation: $tvStation) {
